@@ -1,0 +1,23 @@
+name: Publish bottles
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Formula/*.rb'
+jobs:
+  upload:
+    runs-on: macos-14
+    steps:
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+      - name: Build bottles
+        run: |
+          brew tap ${{ github.repository }}
+          brew test-bot --only-formulae --json
+      - name: Upload to GitHub Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          files: '*.bottle.*'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
