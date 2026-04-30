@@ -13,6 +13,9 @@ class VirtViewer < Formula
   depends_on "gtk+3"
   depends_on "gtk-vnc"
   depends_on "libvirt-glib"
+  depends_on "libxml2"
+  depends_on "pango"
+  depends_on "shared-mime-info"
   depends_on "spice-gtk"
 
   def install
