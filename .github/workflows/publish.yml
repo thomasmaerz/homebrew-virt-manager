@@ -18,7 +18,7 @@ jobs:
       - name: Build bottles
         run: |
           brew tap ${{ github.repository }}
-          brew test-bot --only-formulae --tap=${{ github.repository }} --root-url=https://github.com/${{ github.repository }}/releases/download/bottles
+          brew test-bot --only-formulae --tap=${{ github.repository }} --root-url=https://github.com/${{ github.repository }}/releases/download/bottles --testing-formulae=libvirt,virt-manager,virt-viewer,gtk-vnc
       - name: Upload to GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
