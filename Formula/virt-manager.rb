@@ -18,9 +18,9 @@ class VirtManager < Formula
   depends_on "libxml2"
   depends_on "osinfo-db"
   depends_on "python@3.12"
+  depends_on "pygobject3"
   depends_on "spice-gtk"
   depends_on "vte3"
-  depends_on "pygobject3"
 
   def install
     virtualenv_create(libexec, "python3.12")
@@ -28,7 +28,7 @@ class VirtManager < Formula
     system libexec/"bin/python", "setup.py", "install", "--prefix=#{libexec}"
 
     bin.install Dir[libexec/"bin/virt-*"]
-    bin.env_script_all_files(libexec/"bin", :PATH => "#{libexec}/bin:$PATH")
+    bin.env_script_all_files(libexec/"bin", PATH: "#{libexec}/bin:$PATH")
 
     share.install Dir[libexec/"share/man"]
     share.install Dir[libexec/"share/glib-2.0"]
