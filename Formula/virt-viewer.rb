@@ -16,6 +16,11 @@ class VirtViewer < Formula
   depends_on "spice-gtk"
 
   def install
+    # Fix compatibility with modern Meson by removing positional arguments from i18n.merge_file
+    inreplace "data/meson.build", "i18n.merge_file (\n    desktop,", "i18n.merge_file(\n"
+    inreplace "data/meson.build", "i18n.merge_file (\n    mimetypes,", "i18n.merge_file(\n"
+    inreplace "data/meson.build", "i18n.merge_file (\n    metainfo,", "i18n.merge_file(\n"
+
     mkdir "build" do
       system "meson", *std_meson_args, ".."
       system "ninja", "install"
