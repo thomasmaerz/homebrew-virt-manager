@@ -25,14 +25,10 @@ class Libvirt < Formula
   uses_from_macos "curl"
   uses_from_macos "libxslt"
 
-  on_macos do
-    depends_on "rpcgen" => :build
-  end
-
   def install
     # Apply apple silicon patch if head
     inreplace "src/qemu/qemu_command.c", "qemuBuildAccelCommandLine(cmd, def);", "" if build.head?
-    
+
     mkdir "build" do
       args = %W[
         --localstatedir=#{var}

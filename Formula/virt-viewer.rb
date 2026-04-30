@@ -30,6 +30,6 @@ class VirtViewer < Formula
   end
 
   test do
-    system "#{bin}/virt-viewer", "--version"
+    system bin/"virt-viewer", "--version"
   end
 end
