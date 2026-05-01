@@ -29,9 +29,9 @@ class VirtViewer < Formula
     # Prevent meson post_install from regenerating shared mime cache
     # during install (avoids symlink conflict with shared-mime-info).
     # Remove update-mime-database from PATH so meson's find_program can't find it.
-    ENV["PATH"] = ENV["PATH"].split(":")
-                       .reject { |p| p.include?("shared-mime-info") }
-                       .join(":")
+    ENV["PATH"] = ENV["PATH"].split(":").reject { |p|
+                       p.include?("shared-mime-info")
+                     }.join(":")
     mkdir "build" do
       system "meson", *std_meson_args, ".."
       system "ninja", "install"
