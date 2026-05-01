@@ -32,7 +32,7 @@ class VirtViewer < Formula
     end
     # Remove generated mime cache files to avoid symlink conflict
     # with shared-mime-info. The mime db is regenerated in post_install.
-    rm Dir["#{share}/mime/*"].reject { |f| f.end_with?("/packages") }
+    Dir["#{share}/mime/*"].each { |f| rm f if !File.directory?(f) && !f.end_with?("packages") }
   end
 
   def post_install
