@@ -7,6 +7,7 @@ class GtkVnc < Formula
 
   bottle do
     root_url "https://github.com/thomasmaerz/homebrew-virt-manager/releases/download/bottles"
+    rebuild 2
     sha256 arm64_sequoia: "59408a59f0e1d2b6e74b0e6c0b987b38981df22cfa3657a0732a2b7cb11d25fe"
   end
 

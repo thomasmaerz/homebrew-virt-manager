@@ -8,6 +8,7 @@ class Libvirt < Formula
 
   bottle do
     root_url "https://github.com/thomasmaerz/homebrew-virt-manager/releases/download/bottles"
+    rebuild 1
     sha256 arm64_sequoia: "715dad6606d9328b393271baf958acec7f382db25ca2fe41cac2e82c2bfd7d19"
   end
 
