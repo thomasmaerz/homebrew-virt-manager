@@ -1,6 +1,4 @@
 class VirtManager < Formula
-  include Language::Python::Virtualenv
-
   desc "App for managing virtual machines"
   homepage "https://virt-manager.org/"
   url "https://releases.pagure.org/virt-manager/virt-manager-5.1.0.tar.xz"
@@ -8,8 +6,11 @@ class VirtManager < Formula
 
   depends_on "docutils" => :build
   depends_on "gettext" => :build
+  depends_on "meson" => :build
+  depends_on "ninja" => :build
 
   depends_on "adwaita-icon-theme"
+  depends_on "glib"
   depends_on "gtk+3"
   depends_on "gtk-vnc"
   depends_on "gtksourceview4"
@@ -17,22 +18,15 @@ class VirtManager < Formula
   depends_on "libvirt-glib"
   depends_on "libxml2"
   depends_on "osinfo-db"
-  depends_on "python@3.12"
   depends_on "pygobject3"
+  depends_on "python@3.12"
   depends_on "spice-gtk"
   depends_on "vte3"
 
   def install
-    virtualenv_create(libexec, "python3.12")
-    system libexec/"bin/python", "setup.py", "configure", "--prefix=#{libexec}"
-    system libexec/"bin/python", "setup.py", "install", "--prefix=#{libexec}"
-
-    bin.install Dir[libexec/"bin/virt-*"]
-    bin.env_script_all_files(libexec/"bin", PATH: "#{libexec}/bin:$PATH")
-
-    share.install Dir[libexec/"share/man"]
-    share.install Dir[libexec/"share/glib-2.0"]
-    share.install Dir[libexec/"share/icons"]
+    system "meson", "setup", "build", *std_meson_args, "-Dcompile-schemas=false", "-Dupdate-icon-cache=false"
+    system "meson", "compile", "-C", "build"
+    system "meson", "install", "-C", "build"
   end
 
   def post_install
