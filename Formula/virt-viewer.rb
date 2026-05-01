@@ -4,6 +4,11 @@ class VirtViewer < Formula
   url "https://releases.pagure.org/virt-viewer/virt-viewer-11.0.tar.xz"
   sha256 "a43fa2325c4c1c77a5c8c98065ac30ef0511a21ac98e590f22340869bad9abd0"
 
+  bottle do
+    root_url "https://github.com/thomasmaerz/homebrew-virt-manager/releases/download/bottles"
+    sha256 arm64_sequoia: "29a6086a08cdeda73b9f9bd499317db3ce124fe15cec4091ce558c55a0b7dcf5"
+  end
+
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkg-config" => :build
