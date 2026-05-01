@@ -6,6 +6,11 @@ class Libvirt < Formula
   license all_of: ["LGPL-2.1-or-later", "GPL-2.0-or-later"]
   head "https://gitlab.com/Menci/libvirt.git", branch: "v7.10.0-apple-silicon"
 
+  bottle do
+    root_url "https://github.com/thomasmaerz/homebrew-virt-manager/releases/download/bottles"
+    sha256 arm64_sequoia: "715dad6606d9328b393271baf958acec7f382db25ca2fe41cac2e82c2bfd7d19"
+  end
+
   depends_on "docutils" => :build
   depends_on "meson" => :build
   depends_on "ninja" => :build
@@ -21,6 +26,7 @@ class Libvirt < Formula
   depends_on "libgcrypt"
   depends_on "libiscsi"
   depends_on "libssh2"
+  depends_on "qemu"
   depends_on "readline"
   depends_on "yajl"
 
@@ -31,18 +37,23 @@ class Libvirt < Formula
     # Apply apple silicon patch
     inreplace "src/qemu/qemu_command.c", "qemuBuildAccelCommandLine(cmd, def);", ""
 
+    # Patch the install script to avoid creating directories (it fails on macOS)
+    # This is the most reliable way to skip the failing part of the install
+    inreplace "scripts/meson-install-dirs.py", "import os", "import sys\nsys.exit(0)\nimport os"
+
     mkdir "build" do
       args = %W[
         --localstatedir=#{var}
         --mandir=#{man}
         --sysconfdir=#{etc}
+        -Drunstatedir=#{var}/run
         -Ddriver_esx=enabled
         -Ddriver_qemu=enabled
         -Ddriver_network=enabled
         -Dinit_script=none
         -Dqemu_datadir=#{Formula["qemu"].opt_pkgshare}
       ]
-      system "meson", *std_meson_args, *args, ".."
+      system "meson", "setup", *std_meson_args, *args, ".."
       system "meson", "compile"
       system "meson", "install"
     end
@@ -58,3 +69,4 @@ class Libvirt < Formula
     system "#{bin}/virsh", "-v"
   end
 end
+

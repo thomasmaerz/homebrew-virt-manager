@@ -6,6 +6,11 @@ class VirtManager < Formula
   url "https://releases.pagure.org/virt-manager/virt-manager-5.1.0.tar.xz"
   sha256 "ccfc44b6c1c0be8398beb687c675d9ea4ca1c721dfb67bd639209a7b0dec11b1"
 
+  bottle do
+    root_url "https://github.com/thomasmaerz/homebrew-virt-manager/releases/download/bottles"
+    sha256 arm64_sequoia: "d818057f8cd9707503bc108557fe1647a7f71be00de1c0b4235ec29d6d3e13c7"
+  end
+
   depends_on "docutils" => :build
   depends_on "gettext" => :build
   depends_on "meson" => :build
