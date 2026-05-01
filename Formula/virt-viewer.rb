@@ -26,16 +26,13 @@ class VirtViewer < Formula
     inreplace "data/meson.build", "i18n.merge_file (\n    mimetypes,", "i18n.merge_file(\n"
     inreplace "data/meson.build", "i18n.merge_file (\n    metainfo,", "i18n.merge_file(\n"
 
-    # Prevent meson post_install from regenerating shared mime cache
-    # during install (avoids symlink conflict with shared-mime-info).
-    # Remove update-mime-database from PATH so meson's find_program can't find it.
-    ENV["PATH"] = ENV["PATH"].split(":").reject { |p|
-                       p.include?("shared-mime-info")
-                     }.join(":")
     mkdir "build" do
       system "meson", *std_meson_args, ".."
       system "ninja", "install"
     end
+    # Remove generated mime cache files to avoid symlink conflict
+    # with shared-mime-info. The mime db is regenerated in post_install.
+    rm Dir["#{share}/mime/*"].reject { |f| f.end_with?("/packages") }
   end
 
   def post_install
