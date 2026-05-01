@@ -24,12 +24,14 @@ class VirtViewer < Formula
     inreplace "data/meson.build", "i18n.merge_file (\n    mimetypes,", "i18n.merge_file(\n"
     inreplace "data/meson.build", "i18n.merge_file (\n    metainfo,", "i18n.merge_file(\n"
 
-    # Override update-mime-database to empty string to prevent
-    # post_install.py from regenerating shared mime cache during install.
-    # This avoids symlink conflicts with the shared-mime-info formula.
-    # Mime database is updated in the post_install step instead.
+    # Prevent meson post_install from regenerating shared mime cache
+    # during install (avoids symlink conflict with shared-mime-info).
+    # Mime database is still updated in post_install step.
+    inreplace "meson.build",
+              "update_mime_database_path = update_mime_database.path()",
+              "update_mime_database_path = ''"
     mkdir "build" do
-      system "meson", *std_meson_args, "-Dupdate_mime_database=''", ".."
+      system "meson", *std_meson_args, ".."
       system "ninja", "install"
     end
   end
