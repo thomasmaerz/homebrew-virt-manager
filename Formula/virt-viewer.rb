@@ -9,9 +9,12 @@ class VirtViewer < Formula
   depends_on "ninja" => :build
   depends_on "pkg-config" => :build
 
+  depends_on "gdk-pixbuf"
+  depends_on "gettext"
   depends_on "glib"
   depends_on "gtk+3"
   depends_on "gtk-vnc"
+  depends_on "libvirt"
   depends_on "libvirt-glib"
   depends_on "libxml2"
   depends_on "pango"
