@@ -1,8 +1,8 @@
 class GtkVnc < Formula
   desc "VNC viewer widget for GTK"
   homepage "https://gitlab.gnome.org/GNOME/gtk-vnc"
-  url "https://download.gnome.org/sources/gtk-vnc/1.3/gtk-vnc-1.3.1.tar.xz"
-  sha256 "512763ac4e0559d0158b6682ca5dd1a3bd633f082f5e4349d7158e6b5f80f1ce"
+  url "https://download.gnome.org/sources/gtk-vnc/1.5/gtk-vnc-1.5.0.tar.xz"
+  sha256 "c0beb4747528ad931da43acc567c6a0190f7fc624465571ed9ccece02c34dd23"
   license "LGPL-2.1-or-later"
 
   depends_on "gettext" => :build
