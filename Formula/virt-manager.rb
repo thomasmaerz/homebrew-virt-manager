@@ -40,8 +40,8 @@ class VirtManager < Formula
   end
 
   resource "libvirt-python" do
-    url "https://libvirt.org/sources/python/libvirt-python-12.2.0.tar.gz"
-    sha256 "80c3fe2ae1062abf56456f52518bd670f9ec3917b7f85e152b347ac6b6faf880"
+    url "https://libvirt.org/sources/python/libvirt_python-12.2.0.tar.gz"
+    sha256 "742147988bba7d400f6892beeeb7e0a27758f10ff65421b569b7b4b6a2572e44"
   end
 
   resource "pycairo" do
