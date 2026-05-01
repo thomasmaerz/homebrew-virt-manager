@@ -6,6 +6,7 @@ class VirtViewer < Formula
 
   bottle do
     root_url "https://github.com/thomasmaerz/homebrew-virt-manager/releases/download/bottles"
+    rebuild 1
     sha256 arm64_sequoia: "29a6086a08cdeda73b9f9bd499317db3ce124fe15cec4091ce558c55a0b7dcf5"
   end
 
