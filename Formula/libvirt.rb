@@ -70,4 +70,3 @@ class Libvirt < Formula
     system "#{bin}/virsh", "-v"
   end
 end
-
