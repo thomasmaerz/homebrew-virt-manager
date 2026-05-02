@@ -1,6 +1,4 @@
 class VirtManager < Formula
-  include Language::Python::Virtualenv
-
   desc "App for managing virtual machines"
   homepage "https://virt-manager.org/"
   url "https://releases.pagure.org/virt-manager/virt-manager-5.1.0.tar.xz"
@@ -31,9 +29,17 @@ class VirtManager < Formula
   depends_on "spice-gtk"
   depends_on "vte3"
 
-  resource "certifi" do
-    url "https://files.pythonhosted.org/packages/6d/78/f8db8d57f520a54f0b8a438319c342c61c22759d8f9a1cd2e2180b5e5ea9/certifi-2021.5.30.tar.gz"
-    sha256 "2bbf76fd432960138b3ef6dda3dde0544f27cbf8546c458e60baf371917ba9ee"
+  def install
+    system "meson", "setup", "build", *std_meson_args,
+           "-Dcompile-schemas=false", "-Dupdate-icon-cache=false"
+    system "meson", "compile", "-C", "build"
+    system "meson", "install", "-C", "build"
+
+    libvirt_python_path = Formula["libvirt-python"].opt_lib/"python3.14/site-packages"
+
+    # Wrap the meson-installed binaries to set PYTHONPATH
+    libexec.install bin
+    bin.env_script_all_files(libexec/"bin", PYTHONPATH: "#{libvirt_python_path}:$PYTHONPATH")
   end
 
   resource "charset-normalizer" do
@@ -67,20 +73,24 @@ class VirtManager < Formula
   end
 
   def install
-    venv = virtualenv_create(libexec, "python3.12")
-    venv.pip_install resources
-
     system "meson", "setup", "build", *std_meson_args,
            "-Dcompile-schemas=false", "-Dupdate-icon-cache=false"
     system "meson", "compile", "-C", "build"
     system "meson", "install", "-C", "build"
 
-    # Patch wrapper scripts to use the virtual env's Python
+    python_version = Language::Python.major_minor_version "python3"
+    libvirt_python_path = Formula["libvirt-python"].opt_lib/"python#{python_version}/site-packages"
+
+    # Wrap the meson-installed binaries to set PYTHONPATH
     bin.children.each do |f|
       next unless f.file?
 
-      inreplace f, "#!/usr/bin/env python3", "#!#{libexec}/bin/python3"
+      # Meson already creates a python wrapper. We prepend PYTHONPATH to it.
+      # But it's easier to just use Homebrew's env_script_all_files.
+      # To do that, we move meson's wrappers to libexec/bin first.
     end
+    libexec.install bin
+    bin.env_script_all_files(libexec/"bin", PYTHONPATH: "#{libvirt_python_path}:$PYTHONPATH")
   end
 
   def post_install
