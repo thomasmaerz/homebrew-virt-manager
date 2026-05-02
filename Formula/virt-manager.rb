@@ -22,10 +22,11 @@ class VirtManager < Formula
   depends_on "gtksourceview4"
   depends_on "libosinfo"
   depends_on "libvirt-glib"
+  depends_on "libvirt-python"
   depends_on "libxml2"
   depends_on "osinfo-db"
   depends_on "pygobject3"
-  depends_on "python@3.12"
+  depends_on "python@3.14"
   depends_on "spice-gtk"
   depends_on "vte3"
 
@@ -35,68 +36,18 @@ class VirtManager < Formula
     system "meson", "compile", "-C", "build"
     system "meson", "install", "-C", "build"
 
-    libvirt_python_path = Formula["libvirt-python"].opt_lib/"python3.14/site-packages"
-
-    # Wrap the meson-installed binaries to set PYTHONPATH
-    libexec.install bin
-    bin.env_script_all_files(libexec/"bin", PYTHONPATH: "#{libvirt_python_path}:$PYTHONPATH")
-  end
-
-  resource "charset-normalizer" do
-    url "https://files.pythonhosted.org/packages/eb/7f/a6c278746ddbd7094b019b08d1b2187101b1f596f35f81dc27f57d8fcf7c/charset-normalizer-2.0.6.tar.gz"
-    sha256 "5ec46d183433dcbd0ab716f2d7f29d8dee50505b3fdb40c6b985c7c4f5a3591f"
-  end
-
-  resource "idna" do
-    url "https://files.pythonhosted.org/packages/cb/38/4c4d00ddfa48abe616d7e572e02a04273603db446975ab46bbcd36552005/idna-3.2.tar.gz"
-    sha256 "467fbad99067910785144ce333826c71fb0e63a425657295239737f7ecd125f3"
-  end
-
-  resource "libvirt-python" do
-    url "https://libvirt.org/sources/python/libvirt_python-12.2.0.tar.gz"
-    sha256 "742147988bba7d400f6892beeeb7e0a27758f10ff65421b569b7b4b6a2572e44"
-  end
-
-  resource "pycairo" do
-    url "https://files.pythonhosted.org/packages/bc/3f/64e6e066d163fbcf13213f9eeda0fc83376243335ea46a66cefd70d62e8f/pycairo-1.20.1.tar.gz"
-    sha256 "1ee72b035b21a475e1ed648e26541b04e5d7e753d75ca79de8c583b25785531b"
-  end
-
-  resource "requests" do
-    url "https://files.pythonhosted.org/packages/e7/01/3569e0b535fb2e4a6c384bdbed00c55b9d78b5084e0fb7f4d0bf523d7670/requests-2.26.0.tar.gz"
-    sha256 "b8aa58f8cf793ffd8782d3d8cb19e66ef36f7aba4353eec859e74678b01b07a7"
-  end
-
-  resource "urllib3" do
-    url "https://files.pythonhosted.org/packages/80/be/3ee43b6c5757cabea19e75b8f46eaf05a2f5144107d7db48c7cf3a864f73/urllib3-1.26.7.tar.gz"
-    sha256 "4987c65554f7a2dbf30c18fd48778ef124af6fab771a377103da0585e2336ece"
-  end
-
-  def install
-    system "meson", "setup", "build", *std_meson_args,
-           "-Dcompile-schemas=false", "-Dupdate-icon-cache=false"
-    system "meson", "compile", "-C", "build"
-    system "meson", "install", "-C", "build"
-
-    python_version = Language::Python.major_minor_version "python3"
+    python_version = Language::Python.major_minor_version Formula["python@3.14"].opt_bin/"python3"
     libvirt_python_path = Formula["libvirt-python"].opt_lib/"python#{python_version}/site-packages"
 
-    # Wrap the meson-installed binaries to set PYTHONPATH
-    bin.children.each do |f|
-      next unless f.file?
-
-      # Meson already creates a python wrapper. We prepend PYTHONPATH to it.
-      # But it's easier to just use Homebrew's env_script_all_files.
-      # To do that, we move meson's wrappers to libexec/bin first.
-    end
+    # Wrap the meson-installed binaries to inject PYTHONPATH for libvirt bindings
     libexec.install bin
     bin.env_script_all_files(libexec/"bin", PYTHONPATH: "#{libvirt_python_path}:$PYTHONPATH")
   end
 
   def post_install
-    # manual schema compile step
+    # Compile GSettings schemas manually (skipped during install)
     system Formula["glib"].opt_bin/"glib-compile-schemas", HOMEBREW_PREFIX/"share/glib-2.0/schemas"
-    # manual icon cache update step
+    # Update icon cache manually (skipped during install)
     system Formula["gtk+3"].opt_bin/"gtk3-update-icon-cache", HOMEBREW_PREFIX/"share/icons/hicolor"
   end
 
