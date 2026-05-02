@@ -1,11 +1,23 @@
 # virt-manager Homebrew Tap
 
-This repository provides a maintained Homebrew tap for `virt-manager` and related tools on macOS, specifically optimized for Apple Silicon (M1/M2/M3).
+A Homebrew tap providing `virt-manager` and related tools for macOS on Apple Silicon (M-series), built and tested on macOS 15 Sequoia.
 
-## Features
-- **Fixed URLs:** No more 404 errors during installation.
-- **Binary Support:** Pre-built bottles are automatically generated via GitHub Actions (coming soon).
-- **Modernized:** Uses Python 3.12 and updated GTK libraries.
+## Included formulae
+
+| Formula | Version | Command(s) |
+|---|---|---|
+| `virt-manager` | 5.1.0 | `virt-manager` |
+| `virt-viewer` | 11.0 | `virt-viewer` |
+| `gtk-vnc` | 1.5.0 | `gvnccapture` |
+| `libvirt` | 12.2.0 | `virsh`, `libvirtd` |
+
+Pre-built bottles are available for **arm64_sequoia** (Apple Silicon, macOS 15). Other platforms will build from source.
+
+## Requirements
+
+- Apple Silicon Mac (M1 or later)
+- macOS 15 Sequoia
+- [QEMU](https://www.qemu.org/) (installed automatically as a dependency)
 
 ## Installation
 
@@ -13,19 +25,23 @@ This repository provides a maintained Homebrew tap for `virt-manager` and relate
 # Add this tap
 brew tap thomasmaerz/virt-manager
 
-# Install virt-manager and dependencies
-brew install virt-manager virt-viewer gtk-vnc
+# Install virt-manager and virt-viewer (pulls in libvirt, gtk-vnc, and all other deps)
+brew install virt-manager virt-viewer
 ```
 
-## Running
+## Usage
 
 ```bash
-# Start libvirt service
+# Start the libvirt daemon
 brew services start libvirt
 
-# Open virt-manager
+# Launch virt-manager (GUI)
 virt-manager
+
+# Or use the CLI
+virsh list --all
 ```
 
 ## Credits
-This is a fork and modernization of the abandoned `Menci/homebrew-libvirt-m1` repository.
+
+Fork and modernization of the abandoned [`Menci/homebrew-libvirt-m1`](https://github.com/Menci/homebrew-libvirt-m1) repository.
